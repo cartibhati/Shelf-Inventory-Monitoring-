@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# Deep Learning / YOLO
+*.pt
+*.onnx
+
+# Data & Video Files (Large files)
+Task152_ShelfInventoryMonitoring/Inputs/
+*.mp4
+*.avi
+*.mov
+
+# Generated Outputs (logs, evidence frames, plots)
+Task152_ShelfInventoryMonitoring/Outputs/
