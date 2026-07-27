@@ -95,26 +95,28 @@ def get_video_settings(video_filename):
     """
     video_lower = video_filename.lower()
     
-    # Baseline defaults (bottle and cup are the standard detectable stock items)
+    # Baseline defaults
     settings = {
-        "product_classes": "bottle,cup",
-        "conf_threshold": 0.20,
+        "product_classes": "bottle,cup,apple,orange,banana,book,vase,teddy bear,sports ball,box,handbag,backpack",
+        "conf_threshold": 0.25,
         "low_stock_limit": 2,
         "full_stock_limit": 5
     }
     
     if "shelf_0" in video_lower:
-        settings["conf_threshold"] = 0.20
-        settings["low_stock_limit"] = 3
-        settings["full_stock_limit"] = 6
+        pass # keep baseline defaults
     elif "shelf_1" in video_lower:
+        # Tuned for Auchan supermarket availability
+        settings["product_classes"] = "bottle,cup,book,vase,refrigerator,cell phone"
         settings["conf_threshold"] = 0.20
         settings["low_stock_limit"] = 3
-        settings["full_stock_limit"] = 6
+        settings["full_stock_limit"] = 8
     elif "shelf_2" in video_lower:
-        settings["conf_threshold"] = 0.20
+        # Tuned for WiFi retail camera shelf monitoring (with chips/toiletries)
+        settings["product_classes"] = "bottle,cup,book,sports ball,tv,laptop,bowl,cell phone,toothbrush,vase"
+        settings["conf_threshold"] = 0.15
         settings["low_stock_limit"] = 2
-        settings["full_stock_limit"] = 5
+        settings["full_stock_limit"] = 4
         
     return settings
 
@@ -124,28 +126,29 @@ def get_default_rois(video_filename):
     """
     video_lower = video_filename.lower()
     if "shelf_0" in video_lower:
-        # Video 0: Supermarket shelf (bottles on the left, person on the right)
+        # Video 0: AI Surveillance for Retail - Showroom and Shelf Monitoring
+        # Define two main shelf regions
         return {
-            "Upper_Shelf": [(0.01, 0.01), (0.62, 0.01), (0.62, 0.45), (0.01, 0.45)],
-            "Lower_Shelf": [(0.01, 0.46), (0.62, 0.46), (0.62, 0.98), (0.01, 0.98)]
+            "Shelf_Left": [(0.05, 0.20), (0.42, 0.20), (0.42, 0.90), (0.05, 0.90)],
+            "Shelf_Right": [(0.52, 0.20), (0.95, 0.20), (0.95, 0.90), (0.52, 0.90)]
         }
     elif "shelf_1" in video_lower:
-        # Video 1: Supermarket shelf (bottles in the center/right, person on the left)
+        # Video 1: Auchan Optimising On-Shelf Availability
+        # A single central shelf area monitoring items
         return {
-            "Upper_Shelf": [(0.15, 0.35), (0.95, 0.35), (0.95, 0.70), (0.15, 0.70)],
-            "Lower_Shelf": [(0.15, 0.71), (0.95, 0.71), (0.95, 0.99), (0.15, 0.99)]
+            "Main_Display_Shelf": [(0.10, 0.25), (0.90, 0.25), (0.90, 0.85), (0.10, 0.85)]
         }
     elif "shelf_2" in video_lower:
-        # Video 2: Beverage display fridge (bottles in the center/left, person on the right)
+        # Video 2: WiFi camera for smart retail shelf monitoring
+        # Split into upper shelf and lower shelf
         return {
-            "Upper_Shelf": [(0.25, 0.01), (0.95, 0.01), (0.95, 0.40), (0.25, 0.40)],
-            "Lower_Shelf": [(0.25, 0.41), (0.95, 0.41), (0.95, 0.95), (0.25, 0.95)]
+            "Upper_Shelf": [(0.05, 0.12), (0.95, 0.12), (0.95, 0.48), (0.05, 0.48)],
+            "Lower_Shelf": [(0.05, 0.52), (0.95, 0.52), (0.95, 0.92), (0.05, 0.92)]
         }
     else:
         # Fallback ROI: Center of the frame
         return {
-            "Upper_Shelf": [(0.15, 0.20), (0.85, 0.20), (0.85, 0.50), (0.15, 0.50)],
-            "Lower_Shelf": [(0.15, 0.51), (0.85, 0.51), (0.85, 0.85), (0.15, 0.85)]
+            "Center_Shelf": [(0.15, 0.20), (0.85, 0.20), (0.85, 0.85), (0.15, 0.85)]
         }
 
 def parse_custom_rois(roi_str):
